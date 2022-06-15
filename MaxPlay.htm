@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Max Play modern</title>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> 
+<script src='https://api.html5media.info/1.1.6/html5media.min.js'></script> 
+<style>
+
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500&display=swap");
+
+:root {
+  --background: #e0e5ec;
+  --gray: #797d7f;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+}
+
+body {
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+  background-color: #5f9ea0bf;
+}
+
+img {
+  max-width: 100%;
+}
+
+.container {
+  background-color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  max-width: 550px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.player {
+  width: 95vw;
+  height: 97vh;
+  margin: 10px;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+  box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6),
+    -9px -9px 16px rgba(255, 255, 255, 0.5);
+}
+
+.player__controls {
+  display: flex;
+  width: 95%;
+  justify-content: space-evenly;
+  align-items: center;
+  /*margin-bottom: 20px;*/
+  margin: 10px;
+}
+
+.player__btn {
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -8px -8px 20px 0px #fff9, -6px -6px 6px 0px #fff9,
+    8px 8px 20px #0001, 5px 5px 6px 0px #0001;
+  color: var(--gray);
+}
+
+.player__btn:active {
+  box-shadow: inset -8px -8px 20px #fff9, inset -5px -5px 6px #fff9,
+    inset 8px 8px 20px #0003, inset 5px 5px 6px #0001;
+}
+
+.player__btn--small {
+  min-width: 50px;
+  min-height: 50px;
+}
+
+.player__title {
+  font-weight: 600;
+  font-size: 0.8em;
+  color: #a1a1a1;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.player__album {
+
+}
+
+.player__img {
+  border-radius: 50%;
+  box-shadow: 2px 2px 7px rgb(163, 177, 198), -2px -2px 7px rgb(163, 177, 198),
+    -8px -8px 50px rgba(255, 255, 255, 0.8), 3px 3px 25px rgba(0, 0, 0, 0.6);
+}
+
+.player__artist {
+  font-size: 1.2em;
+  font-weight: 500;
+  opacity: 0.5;
+  margin: 15px 0px 5px 0px;
+}
+
+.player__song {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  font-weight: 400;
+  font-size: 1em;
+  opacity: 0.5;
+  margin: 0;
+}
+
+.player__level {
+  width: 80%;
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  padding: 0;
+  margin-top: 40px;
+}
+
+.player__level::-webkit-slider-runnable-track {
+  background-color: #d7dbdd;
+  height: 6px;
+  border-radius: 3px;
+}
+
+.player__level::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border-radius: 100%;
+  background-color: #5c87fe;
+  height: 18px;
+  width: 18px;
+  margin-top: -7px;
+}
+
+.audio-duration {
+  margin-top: -30px;
+  display: flex;
+  width: 78%;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a1a1a1;
+  letter-spacing: 1px;
+}
+
+.start {
+  flex: 1;
+}
+
+.player__audio {
+ visibility: hidden;
+}
+
+.player__btn--medium {
+  min-height: 70px;
+  min-width: 70px;
+}
+
+.blue {
+  background-color: #5c87fe;
+  color: #fff;
+}
+
+.hide {
+  display: none;
+}
+
+.fa-backward:before {
+    content: "◄";
+}
+
+.fa-forward:before {
+    content: "►";
+}
+
+i {
+    font-style: normal;
+    font-size: x-large;
+}
+
+/*----------------------------------------------------------------------*/
+
+
+
+#plreprod { 
+    margin:0 auto; 
+    width:100%; 
+    height:60vh;  
+    overflow-y: visible;
+    overflow-x: hidden; 
+  }
+
+#plList {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    padding: 2% 8%;
+  }
+
+#plList li { 
+    cursor: pointer; 
+    margin:0; 
+    padding:6px 0px 6px;
+    border-radius: 6px;
+}
+
+#plList li:hover { background-color:#5f9ea0;} 
+
+.plItem { padding: 4%;}
+
+.plTitle { font-size: 4vw; font: -webkit-control;}
+
+.plNum, .plLength {display: none; }
+
+ul { list-style:none; }
+
+.plSel, .plSel:hover {
+    background-color: #569d7b;
+    color: white;
+    cursor: default;
+}
+
+/* Scroll color - Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 10px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #065fd442;
+    border-radius: 20px;
+    border: 2px solid #065fd49e;
+}
+
+.player__album
+{
+width: 150px;
+display: block;
+-webkit-animation: spin1 10s infinite linear;
+-moz-animation: spin1 2s infinite linear;
+-o-animation: spin1 2s infinite linear;
+-ms-animation: spin1 2s infinite linear;
+animation: spin1 10s infinite linear;
+}
+
+@-webkit-keyframes spin1 {
+/*
+0% { -webkit-transform: rotate(0deg);} */
+100% { -webkit-transform: rotate(360deg);}
+}
+
+</style> 
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="player">
+
+      <div class="player__controls">
+       <div class="player__btn player__btn--small" id="previous">
+         <i class="fas fa-arrow-left" onclick="window.open('', '_self', ''); window.close();">&#120124;</i>
+       </div>
+
+       <h5 class="player__title">MAXPLAY</h5>
+
+       <div class="player__btn player__btn--small" id="icon-menu">
+         <i class="fas fa-bars">&#8801; </i> 
+
+          <!--label for="hack" id="icon-menu" class="player__btn player__btn--small">Menú</label>
+          <input type="checkbox" id="hack"/
+          <&#8943; <&#8943;>
+	https://i.ibb.co/ZS3wRSh/cover.jpg"
+	-->
+        </div>
+
+       </div>
+
+
+
+
+     <div class="player__album">
+       <img src="https://img.freepik.com/vector-gratis/disco-audio-analogo-vinilo-vintage_53562-3369.jpg" id="record" alt="Album Cover" class="player__img" loading="lazy" />
+     </div>
+
+      <h2 class="player__artist" id="npAction">Bienvenido!</h2>
+      <h3 class="player__song" id="npTitle">Dale Play</h3>
+
+     <input type="range" class="player__level" id="range" min="0" max="100" value="100"></input> 
+     <div class="audio-duration">
+       <div class="start">Volumen</div>
+       <div id="display1" class="end">100</div>
+     </div>
+
+    <div id="audio0" class="player__audio">
+      <audio preload id="audio1" controls="controls">Tu navegador no soporta HTML5 Audio!</audio>
+    </div>
+
+     <div class="player__controls">
+       <div class="player__btn player__btn--medium" id="btnPrev">
+         <i class="fas fa-backward"></i>
+       </div>
+       <div class="player__btn player__btn--medium blue play" id="play">
+         <i class="fas fa-play play-btn">&#x25B6;</i>
+         <i class="fas fa-pause pause-btn hide">&#9724;</i>
+       </div>
+       <div class="player__btn player__btn--medium" id="btnNext">
+         <i class="fas fa-forward"></i>
+       </div>
+     </div>
+
+     <div id="plreprod"> <ul id="plList"> </ul> </div>
+
+  </div>
+</div>
+
+
+
+<script id="rendered-js">
+
+var b = document.documentElement;
+  b.setAttribute('data-useragent', navigator.userAgent);
+  b.setAttribute('data-platform', navigator.platform);
+jQuery(function ($) {
+var supportsAudio = !!document.createElement('audio').canPlayType;
+if (supportsAudio) {
+
+var index = 0,
+playing = true;
+mediaPath = '',
+extension = '',
+tracks = [
+
+{ track: 1, name: "La 100 y vos", file: "https://musicsrc.cvattv.com.ar/L100" },
+{ track: 2, name: "Radio Disney", file: "https://musicsrc.cvattv.com.ar/RDIS" },
+{ track: 3, name: "Blue FM", file: "https://playerservices.streamtheworld.com/api/livestream-redirect/BLUE_FM_100_7AAC.aac" },
+{ track: 4, name: "Aspen FM", file: "https://mdstrm.com/audio/60a2745ff943100826374a70/icecast.audio" },
+{ track: 5, name: "Vorterix", file: "http://online.radiozero.fm:8000/;"},
+{ track: 5, name: "Urbana Play", file: "https://vmf.edge-apps.net/playlist/urbana.m3u8/play.m3u8"},
+{ track: 5, name: "FM Vale 97.5", file: "http://vale.stweb.tv:1935/vale/live/playlist.m3u8 " },
+{ track: 3, name: "Mega 98.3", file: "https://mega.stweb.tv/mega983/live/playlist.m3u8"},
+{ track: 1, name: "POP 101.5", file: "https://sa.mp3.icecast.magma.edge-access.net/sc_rad38" },
+{ track: 7, name: "Rock & Pop", file: "https://musicsrc.cvattv.com.ar/RandP" },
+{ track: 9, name: "Red Boing F!88.7", file: "https://boing.streaming.gabrielli.com.ar/radio/8020/radio.mp3" },
+{ track: 10, name: "Late FM", file: "http://streaming.radiolinksmedia.com:8252/;stream " },
+{ track: 10, name: "Radio Latina", file:"https://radiolatina.live:10992/;" },
+{ track: 11, name: "FM Pasion 102.7BsAs", file: "http://streamlky.alsolnet.com:443/fmpasion" },
+{ track: 30, name: "FM Okey", file: "http://streaming.fmokey.cl:8000/FmOkAT.mp3" },
+{ track: 14, name: "Radio Folklore", file: "http://streamlky.alsolnet.com:443/radiofolclorisimohd" },
+{ track: 15, name: "Radio Mitre", file: "https://musicsrc.cvattv.com.ar/RMIT" },
+{ track: 16, name: "Radio Nacional", file: "https://musicsrc.cvattv.com.ar/RNAC" },
+{ track: 18, name: "Radio AM720 Mza", file: "http://audio.bustream.com:8062/stream" },
+{ track: 20, name: "La Red AM910", file: "https://playerservices.streamtheworld.com/api/livestream-redirect/LA_RED_AM910AAC.aac" },
+{ track: 21, name: "CNN Radio AM950", file: "http://estudio.cnnradioargentina.com.ar:8000/stream" },
+{ track: 22, name: "Monumental 1080", file: "https://musicsrc.cvattv.com.ar/RMON" },
+{ track: 22, name: "TechnoBase FM", file: "https://listener1.mp3.tb-group.fm/tb.mp3" },
+{ track: 23, name: "HouseTime FM", file: "https://listener3.mp3.tb-group.fm/ht.mp3" },
+{ track: 25, name: "Techno 24/7", file: "http://listen.diesel.fm:9001/techno" },
+{ track: 26, name: "Trance 24/7", file: "http://listen.diesel.fm:9001/trance" },
+{ track: 24, name: "FM Kiss - Esp.", file: "http://kissfm.kissfmradio.cires21.com/kissfm.mp3" },
+
+/* { track: 0, name: " ", file: "" }, */
+
+
+],
+
+    buildPlaylist = $.each(tracks, function (key, value) {
+      var trackNumber = value.track,
+      trackName = value.name,
+      trackDuration = value.duration;
+      if (trackNumber.toString().length === 1) {
+        trackNumber = '0' + trackNumber;
+      }
+      $('#plList').append('<li> \
+                    <div class="plItem"> \
+                        <span class="plNum">' + trackNumber + '.</span> \
+                        <span class="plTitle">' + trackName + '</span> \
+                        <span class="plLength">' + trackDuration + '</span> \
+                    </div> \
+                </li>');
+    }),
+
+    trackCount = tracks.length,
+    npAction = $('#npAction'),
+    npTitle = $('#npTitle'),
+    npTitle2 = $('npTitle'),     
+
+    audio = $('#audio1').bind('play', function () {
+      playing = true;
+      npAction.text('Reproduciendo...');
+    }).bind('pause', function () {
+      playing = false;
+      npAction.text('Detenido...');
+    }).bind('error', function () {
+     playing = true;
+      npAction.text('Reinicio...');
+
+/*
+player.on('ended', function() {
+    $('.selected').next('li').trigger('click');
+});
+
+*/
+
+
+      if (index + 1 < trackCount) {
+        index++;
+        loadTrack(index);
+        audio.play();
+      } else {
+        audio.pause();
+        index = 0;
+        loadTrack(index);
+      }
+    }).get(0),
+    btnPrev = $('#btnPrev').click(function () {
+      if (index - 1 > -1) {
+        index--;
+        loadTrack(index);
+        if (playing) {
+          audio.play();
+        }
+      } else {
+        audio.pause();
+        index = 0;
+        loadTrack(index);
+      }
+    }),
+    btnNext = $('#btnNext').click(function () {
+      if (index + 1 < trackCount) {
+        index++;
+        loadTrack(index);
+        if (playing) {
+          audio.play();
+        }
+      } else {
+        audio.pause();
+        index = 0;
+        loadTrack(index);
+      }
+    }),
+    li = $('#plList li').click(function () {
+      var id = parseInt($(this).index());
+      if (id !== index) {
+        playTrack(id);
+      }
+    }),
+    loadTrack = function (id) {
+      $('.plSel').removeClass('plSel');
+      $('#plList li:eq(' + id + ')').addClass('plSel');
+      npTitle.text(tracks[id].name);
+      index = id;
+      audio.src = mediaPath + tracks[id].file;
+    },
+    playTrack = function (id) {
+      loadTrack(id);
+      audio.play();
+      };
+      loadTrack(index);
+      }
+    });
+//fin
+
+</script>
+
+
+<script>
+
+// BOTON PLAY - PAUSA
+let audio = document.getElementById("audio1");
+let playPause = document.getElementById("play");
+
+playPause.addEventListener("click", () => {
+  if (audio.paused || audio.ended) {
+    playPause.querySelector(".pause-btn").classList.toggle("hide");
+    playPause.querySelector(".play-btn").classList.toggle("hide");
+    audio.play();
+  } else {
+    audio.pause();
+    playPause.querySelector(".pause-btn").classList.toggle("hide");
+    playPause.querySelector(".play-btn").classList.toggle("hide");
+  }
+});
+
+// VOLUMEN - BARRA
+var audioVOL = document.getElementById("audio1");
+var sliderVOL = document.getElementById("range");
+var displayVOL = document.getElementById("display1");
+sliderVOL.addEventListener("input", sliderActions);
+
+function sliderActions( )
+{  var newVolume = sliderVOL.value;
+  displayVOL.innerText = newVolume; // range 0 to 100
+  audioVOL.volume = newVolume / 100; // range 0 to 1 
+};
+
+// COMTROL SUPERIORES
+
+
+navigator.mediaSession.setActionHandler('play', function() {
+  audio.play();
+  navigator.mediaSession.playbackState = "playing"; });
+
+navigator.mediaSession.setActionHandler('pause', function() {
+  audio.pause();
+  navigator.mediaSession.playbackState = "paused";  });
+
+let skipTime = 10; // Time to skip in seconds
+
+navigator.mediaSession.setActionHandler('seekbackward', function() {
+  audio.currentTime = Math.max(audio.currentTime - skipTime, 0); });
+
+navigator.mediaSession.setActionHandler('seekforward', function() {
+  audio.currentTime = Math.min(audio.currentTime + skipTime, audio.duration); });
+
+navigator.mediaSession.setActionHandler('previoustrack', function() {
+  document.querySelector('#btnPrev').click()});;
+
+navigator.mediaSession.setActionHandler('nexttrack', function() {
+  document.querySelector('#btnNext').click()});;
+
+</script>
+
+</script>
+
+
+</body>
+</html>
