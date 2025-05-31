@@ -171,6 +171,25 @@ listaVideos:hover {
 
 .jw-featured { display:none!important ; }
 
+.jw-next-prev-controls {
+  position: absolute;
+  bottom: 50px;
+  right: 80px;
+  z-index: 999;
+  display: flex;
+  gap: 10px;
+}
+
+.jw-next-prev-controls button {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+    
 /*
 
 , .jw-breakpoint--1, .jw-flag-small-player, .jw-state-buffering, .jw-state-buffering, .jw-flag-small-player 
@@ -1506,6 +1525,45 @@ player.on('complete', function() {
 </script>
 
 
+<script>
+const listaVideos = document.querySelectorAll('#listaVideos li');
+let currentIndex = 0;
+
+const player = jwplayer("myElement").setup({
+  file: listaVideos[currentIndex].dataset.src,
+  width: "100%",
+  aspectratio: "16:9",
+  autostart: true
+});
+
+// Agregar botones visuales dentro del player
+const controlesExtra = document.createElement('div');
+controlesExtra.className = 'jw-next-prev-controls';
+controlesExtra.innerHTML = `
+  <button id="btnPrev">◀</button>
+  <button id="btnNext">▶</button>
+`;
+document.querySelector("#myElement").appendChild(controlesExtra);
+
+// Función para cambiar de canal
+function cargarVideo(index) {
+  if (index < 0 || index >= listaVideos.length) return;
+  currentIndex = index;
+  const nuevoSrc = listaVideos[currentIndex].dataset.src;
+  const nombre = listaVideos[currentIndex].textContent;
+  player.load([{ file: nuevoSrc }]);
+  player.play();
+  document.getElementById('nombreCanal').textContent = `Bienvenido a R2B TV, estás viendo ${nombre}`;
+}
+
+document.getElementById("btnNext").addEventListener("click", () => {
+  if (currentIndex < listaVideos.length - 1) cargarVideo(currentIndex + 1);
+});
+
+document.getElementById("btnPrev").addEventListener("click", () => {
+  if (currentIndex > 0) cargarVideo(currentIndex - 1);
+});
+</script>
     <!-- ... -->
 
 
